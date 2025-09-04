@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Landing Page</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a09;
+            color: #e5e7eb;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        body.light-theme {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        
+        /* Full-page theme changes */
+        body.light-theme .bg-zinc-900 { background-color: #f9fafb; }
+        body.light-theme .bg-zinc-800 { background-color: #f3f4f6; }
+        body.light-theme .bg-zinc-700 { background-color: #e5e7eb; }
+        body.light-theme .text-zinc-300 { color: #6b7280; }
+        body.light-theme .text-zinc-400 { color: #9ca3af; }
+        body.light-theme .text-white { color: #1f2937; }
+        body.light-theme .scrolled-nav { background-color: rgba(249, 250, 251, 0.9); }
+        body.light-theme .hover\:bg-zinc-700:hover { background-color: #e5e7eb; }
+        body.light-theme .bg-sky-600 { background-color: #0ea5e9; }
+        body.light-theme .hover\:bg-sky-700:hover { background-color: #0284c7; }
+        body.light-theme .focus\:ring-sky-500:focus { border-color: #0ea5e9; }
+
+        body.light-theme .bg-gradient-to-br {
+            background-image: linear-gradient(to bottom right, #e2e8f0, #f1f5f9, #cbd5e1);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            margin: auto;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-button {
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+        }
+
+        /* Custom scrollbar for a better aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="fixed w-full top-0 left-0 z-50 transition-all duration-300 ease-in-out p-4 md:p-6">
+        <div class="container mx-auto flex justify-between items-center flex-wrap">
+            <!-- Logo -->
+            <a href="#home" class="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 transition-colors duration-200 rounded-md p-2">
+                Digital Canvas
+            </a>
+
+            <!-- Menu Button and Theme Toggle for Mobile -->
+            <div class="flex items-center space-x-4 md:hidden">
+                <button id="theme-toggle-mobile" class="text-white focus:outline-none p-2 rounded-full hover:bg-zinc-700 transition-colors duration-200">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path id="theme-icon-path-mobile" d="M12 2a10 10 0 0110 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 1.5c-4.694 0-8.5 3.806-8.5 8.5 0 4.694 3.806 8.5 8.5 8.5V3.5z"></path>
+                    </svg>
+                </button>
+                <button id="menu-button" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+
+            <!-- Navigation Links and Theme Toggle -->
+            <div id="nav-menu" class="hidden md:flex w-full md:w-auto mt-4 md:mt-0 items-center justify-center space-x-4">
+                <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 text-center text-lg">
+                    <li>
+                        <a href="#home" class="text-white font-medium hover:text-sky-400 hover:bg-zinc-700 rounded-md py-2 px-4 transition-colors duration-200">Home</a>
+                    </li>
+                    <li>
+                        <a href="#about" class="text-white font-medium hover:text-sky-400 hover:bg-zinc-700 rounded-md py-2 px-4 transition-colors duration-200">About</a>
+                    </li>
+                    <li>
+                        <a href="#services" class="text-white font-medium hover:text-sky-400 hover:bg-zinc-700 rounded-md py-2 px-4 transition-colors duration-200">Services</a>
+                    </li>
+                    <li>
+                        <button id="contact-button" class="text-white font-medium hover:text-sky-400 hover:bg-zinc-700 rounded-md py-2 px-4 transition-colors duration-200">Contact</button>
+                    </li>
+                </ul>
+                <button id="theme-toggle-desktop" class="text-white focus:outline-none p-2 rounded-full hover:bg-zinc-700 transition-colors duration-200 hidden md:block">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path id="theme-icon-path-desktop" d="M12 2a10 10 0 0110 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 1.5c-4.694 0-8.5 3.806-8.5 8.5 0 4.694 3.806 8.5 8.5 8.5V3.5z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center text-center p-8 bg-zinc-900 relative overflow-hidden">
+            <!-- Background gradient effect -->
+            <div class="absolute inset-0 z-0 bg-gradient-to-br from-zinc-900 via-zinc-800 to-slate-900 opacity-75"></div>
+            <div class="relative z-10 max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 mb-4 animate-pulse-slow">
+                    Launch Your Digital Presence with Impact.
+                </h1>
+                <p class="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mb-8 float">
+                    Sleek, modern, and built to capture attention on any device.
+                </p>
+                <a href="#about" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+                    Discover More
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="min-h-screen flex items-center justify-center p-8 bg-zinc-800">
+            <div class="max-w-4xl mx-auto text-center md:text-left">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 mb-4">Our Mission</h2>
+                        <p class="text-lg text-zinc-300">
+                            We are a collective of innovators and creators, dedicated to forging elegant and powerful web solutions. We place user experience at our core, crafting applications with clean, efficient code that delivers an exceptional digital journey.
+                        </p>
+                        <p class="text-lg text-zinc-300 mt-4">
+                            Our team unites diverse skills and a shared commitment to quality and forward-thinking design. We aim to build enduring partnerships that drive success.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="w-full h-64 bg-zinc-700 rounded-lg shadow-lg flex items-center justify-center p-4 transform transition-transform duration-300 hover:scale-105">
+                            <svg class="w-24 h-24 text-sky-400 opacity-50 float" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="min-h-screen flex items-center justify-center p-8 bg-zinc-900">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 mb-8">Our Expertise</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="bg-zinc-800 p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-zinc-700">
+                        <svg class="w-12 h-12 text-sky-400 mx-auto mb-4 float" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25m0 0l-2.25 2.25M12 19.25V4.75m0 14.5a.75.75 0 010-1.5m0 1.5a.75.75 0 010-1.5m-3 0a.75.75 0 010-1.5m-3 0a.75.75 0 010-1.5"></path>
+                        </svg>
+                        <h3 class="text-2xl font-semibold mb-2 text-zinc-200">Web Development</h3>
+                        <p class="text-zinc-400">Crafting scalable and secure web platforms tailored to your vision.</p>
+                    </div>
+                    <!-- Service Card 2 -->
+                    <div class="bg-zinc-800 p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-zinc-700">
+                        <svg class="w-12 h-12 text-sky-400 mx-auto mb-4 float" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <h3 class="text-2xl font-semibold mb-2 text-zinc-200">UI/UX Design</h3>
+                        <p class="text-zinc-400">Designing intuitive and stunning user interfaces that drive engagement.</p>
+                    </div>
+                    <!-- Service Card 3 -->
+                    <div class="bg-zinc-800 p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-zinc-700">
+                        <svg class="w-12 h-12 text-sky-400 mx-auto mb-4 float" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20v-6a4 4 0 014-4V4a4 4 0 014 4v6a4 4 0 01-4 4h-4z"></path>
+                        </svg>
+                        <h3 class="text-2xl font-semibold mb-2 text-zinc-200">Digital Strategy</h3>
+                        <p class="text-zinc-400">Providing strategic guidance to help you navigate the digital landscape and succeed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Contact Form -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content relative">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <h2 class="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 text-center">Let's Connect</h2>
+            <form class="space-y-4">
+                <input type="text" placeholder="Your Name" class="w-full p-3 rounded-lg bg-zinc-700 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200">
+                <input type="email" placeholder="Your Email" class="w-full p-3 rounded-lg bg-zinc-700 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200">
+                <textarea placeholder="Your Message" rows="5" class="w-full p-3 rounded-lg bg-zinc-700 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200"></textarea>
+                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-900 text-center py-6">
+        <p class="text-zinc-400 text-sm">© 2025 Digital Canvas. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for dynamic navigation and features -->
+    <script>
+        const navbar = document.getElementById('navbar');
+        const menuButton = document.getElementById('menu-button');
+        const navMenu = document.getElementById('nav-menu');
+        const contactButton = document.getElementById('contact-button');
+        const contactModal = document.getElementById('contact-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const themeToggleDesktop = document.getElementById('theme-toggle-desktop');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+
+        // Function to toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLightTheme = document.body.classList.contains('light-theme');
+            localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
+            updateThemeIcons(isLightTheme);
+        }
+
+        // Function to update SVG icon based on theme
+        function updateThemeIcons(isLightTheme) {
+            const moonIcon = 'M12 2a10 10 0 0110 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 1.5c-4.694 0-8.5 3.806-8.5 8.5 0 4.694 3.806 8.5 8.5 8.5V3.5z';
+            const sunIcon = 'M12 18a6 6 0 110-12 6 6 0 010 12zm0-13a1 1 0 000 2V4a1 1 0 000-2v2zm0 13a1 1 0 000-2v2a1 1 0 000 2v-2zM4.93 18.07a1 1 0 001.414 0L6.343 17a1 1 0 000-1.414L4.93 14.586a1 1 0 00-1.414 1.414l1.414 1.414zm14.14 0a1 1 0 00-1.414 0l-1.414-1.414a1 1 0 000-1.414L18.07 14.586a1 1 0 001.414 1.414l-1.414 1.414zM2 12a1 1 0 002 0h-2zM20 12a1 1 0 002 0h-2zm-1.464-6.464a1 1 0 000-1.414l-1.414-1.414a1 1 0 00-1.414 0l-1.414 1.414a1 1 0 000 1.414l1.414 1.414a1 1 0 001.414 0zM4.93 4.93a1 1 0 00-1.414 0l-1.414 1.414a1 1 0 000 1.414L4.93 7.843a1 1 0 001.414 0L7.843 6.343a1 1 0 000-1.414z';
+            document.getElementById('theme-icon-path-desktop').setAttribute('d', isLightTheme ? sunIcon : moonIcon);
+            document.getElementById('theme-icon-path-mobile').setAttribute('d', isLightTheme ? sunIcon : moonIcon);
+        }
+
+        // Set initial theme from localStorage
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            updateThemeIcons(true);
+        } else {
+            updateThemeIcons(false);
+        }
+
+        // Toggle mobile menu visibility
+        menuButton.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+        });
+
+        // Change navbar style on scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled-nav');
+            } else {
+                navbar.classList.remove('scrolled-nav');
+            }
+        });
+        
+        // Modal functionality
+        contactButton.addEventListener('click', () => {
+            contactModal.style.display = 'flex';
+            setTimeout(() => {
+                contactModal.classList.add('show');
+            }, 10);
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            contactModal.classList.remove('show');
+            setTimeout(() => {
+                contactModal.style.display = 'none';
+            }, 300);
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === contactModal) {
+                contactModal.classList.remove('show');
+                setTimeout(() => {
+                    contactModal.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        // Theme toggle listeners
+        themeToggleDesktop.addEventListener('click', toggleTheme);
+        themeToggleMobile.addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
